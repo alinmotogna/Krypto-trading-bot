@@ -51,51 +51,30 @@ using namespace nlohmann;
 #include "qe.h"
 #include "gw.h"
 
-    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    ;;int main(int argc, char** argv) {;;
-    ;;;;K::CF cf;;;;;;;;;;;;;;;;;;;;;;;;;
-    ;;;;K::EV ev;;;;;;;    ;;;;    ;;;;;;
-    ;;;;K::DB db;;;;;;;    ;;    ;;;;;;;;
-    ;;;;K::UI ui;;;;;;;        ;;;;;;;;;;
-    ;;;;K::QP qp;;;;;;;        ;;;;;;;;;;
-    ;;;;K::OG og;;;;;;;    ;;    ;;;;;;;;
-;   ;;;;K::MG mg;;;;;;;    ;;;;    ;;;;;;            ;
-;;  ;;;;K::PG pg;;;;;;;    ;;;;    ;;;;;;           ;;
-;;;;;;;;K::QE qe;;;;;;;;;;;;;;;    ;;;;;;         ;;;;;;;; // youtu.be/dVlGmdl-g9Q
-    ;;;;K::GW gw;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;;;cf.main(argc, argv);;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; // youtu.be/nwyDU3SGgQQ
-;;  ;;  cf.link(&ev,&db,&ui,&qp,&og,&mg,&pg,&qe,&gw);;
-;   ;;  ev.wait(/*     Wherever you go..         */);;;;;; // youtu.be/DKSO5YlYbOg
-    ;;  db.wait(/*     Whatever you do..         */);;
-    ;;  ui.wait(/*     I will be right here      */);;;;;; // youtu.be/FornpYhezt4
-    ;;  qp.wait(/*      waiting for coins.       */);;
-    ;;  og.wait(/*     Whatever it takes..       */);;;;;; // youtu.be/Wd2fSSt4MDg
-    ;;  mg.wait(/*     Or how my OS breaks,      */);;
-    ;;  pg.wait(/*     I will be right here      */);;;;;; // youtu.be/02OHHWG1EQY
-    ;;  qe.wait(/*      waiting for coins.       */);;
-;   ;;  gw.wait(/*     Day after day.         :wq*/);;;;;; // youtu.be/AMCeEoOgSvc
-;;  ;;;;return EXIT_FAILURE;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;};;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; ;;;;;;; // youtu.be/dp5hsDgENLk
-;;  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;  ;;
-;                        /*K\*/                      ;
-         /*    .        kKKKKK,       .          *
-                       kKKKK  KK,
-     .         ,kFIREKKKKLET  `KK,_          *
-          ,RUNNERV'      KKKK   `K,`\
-        ,KKK    KK   .    KTHE   `V
-     kKKKV'     KK         KKKK    \_              .
-*    V   l   .   KK        KKKFIRE         .
-     l    \       KK,     FKK  KKKKKK,
-    /            KK l    IKK    RUN `K,
-                KK  l   RKK     K K, `K,            *
-      .        KK      EKK      K  K, `l
-               K        KK      V  `K   \
-               V        RKK     l   V
- K             l        V Uk        l      .
-  \             \       l  Nk
-                  \         K     *    X
-                       \    V    /    /        K
-                 X   \  \ X |  / X  /        /
-                  \       \\|/ /  /
-_____ youtu.be/he9MKrsZTN8 \|/ youtu.be/l13OfmQlov8 _____
-\* ### youtu.be/w4xWGNQwJCs x youtu.be/LC-W2YV9Tbc ### */
+int main(int argc, char** argv) {
+  K::CF cf;
+  K::EV ev;
+  K::DB db;
+  K::UI ui;
+  K::QP qp;
+  K::OG og;
+  K::MG mg;
+  K::PG pg;
+  K::QE qe;
+  K::GW gw;
+
+  cf.main(argc, argv);
+  cf.link(&ev,&db,&ui,&qp,&og,&mg,&pg,&qe,&gw);
+
+  ev.wait();
+  db.wait();
+  ui.wait();
+  qp.wait();
+  og.wait();
+  mg.wait();
+  pg.wait();
+  qe.wait();
+  gw.wait();
+
+  return EXIT_FAILURE;
+}

@@ -212,6 +212,7 @@ namespace K {
     if (k.mode == mQuotingMode::Depth) k.widthPercentage = false;
     k._matchPings = k.safety == mQuotingSafety::Boomerang or k.safety == mQuotingSafety::AK47;
   };
+
   struct mPair {
     string base,
            quote;
@@ -222,6 +223,7 @@ namespace K {
       base(b), quote(q)
     {};
   };
+
   struct mWallet {
     double amount,
            held;
@@ -233,6 +235,7 @@ namespace K {
       amount(a), held(h), currency(c)
     {};
   };
+
   static void to_json(json& j, const mWallet& k) {
     j = {
       {"amount", k.amount},
@@ -240,6 +243,7 @@ namespace K {
       {"currency", k.currency}
     };
   };
+
   struct mProfit {
            double baseValue,
                   quoteValue;
@@ -251,6 +255,7 @@ namespace K {
       baseValue(b), quoteValue(q), time(t)
     {};
   };
+
   static void to_json(json& j, const mProfit& k) {
     j = {
       {"baseValue", k.baseValue},
@@ -263,6 +268,7 @@ namespace K {
     if (j.end() != j.find("quoteValue")) k.quoteValue = j.at("quoteValue").get<double>();
     if (j.end() != j.find("time")) k.time = j.at("time").get<unsigned long>();
   };
+
   struct mSafety {
     double buy,
            sell,
@@ -285,6 +291,7 @@ namespace K {
       {"sellPong", k.sellPong}
     };
   };
+
   struct mPosition {
        double baseAmount,
               quoteAmount,
@@ -317,6 +324,7 @@ namespace K {
       {"exchange", (int)k.exchange}
     };
   };
+
   struct mTrade {
            string tradeId;
         mExchange exchange;
@@ -446,6 +454,7 @@ namespace K {
       {"computationalLatency", k.computationalLatency}
     };
   };
+
   struct mLevel {
     double price,
            size;
@@ -456,6 +465,7 @@ namespace K {
       price(p), size(s)
     {};
   };
+
   struct mLevels {
     vector<mLevel> bids,
                    asks;
@@ -466,6 +476,7 @@ namespace K {
       bids(b), asks(a)
     {};
   };
+
   static void to_json(json& j, const mLevels& k) {
     json b, a;
     for (vector<mLevel>::const_iterator it = k.bids.begin(); it != k.bids.end(); ++it)
@@ -474,6 +485,7 @@ namespace K {
       a.push_back({{"price", it->price}, {"size", it->size}});
     j = {{"bids", b}, {"asks", a}};
   };
+
   struct mQuote {
     mLevel bid,
            ask;
@@ -489,6 +501,7 @@ namespace K {
       bid(b), ask(a), isBidPong(bP), isAskPong(aP)
     {};
   };
+
   static void to_json(json& j, const mQuote& k) {
     j = {
       {"bid", {
@@ -501,6 +514,7 @@ namespace K {
       }}
     };
   };
+
   struct mQuoteStatus {
      mQuoteState bidStatus,
                  askStatus;
@@ -514,6 +528,7 @@ namespace K {
       bidStatus(b), askStatus(a), quotesInMemoryNew(n), quotesInMemoryWorking(w), quotesInMemoryDone(d)
     {};
   };
+
   static void to_json(json& j, const mQuoteStatus& k) {
     j = {
       {"bidStatus", (int)k.bidStatus},
@@ -534,6 +549,7 @@ namespace K {
                 *wLog = nullptr;
   static mutex wMutex;
   static vector<function<void()>*> gwEndings;
+
   class Gw {
     public:
       static Gw *E(mExchange e);
@@ -555,14 +571,47 @@ namespace K {
               apikey  = "", secret  = "",
               user    = "", pass    = "",
               ws      = "", http    = "";
-      virtual string A() = 0;
-      virtual   void wallet() = 0,
-                     levels() = 0,
-                     send(string oI, mSide oS, string oP, string oQ, mOrderType oLM, mTimeInForce oTIF, bool oPO, unsigned long oT) = 0,
-                     cancel(string oI, string oE, mSide oS, unsigned long oT) = 0,
-                     cancelAll() = 0,
-                     close() = 0;
+       virtual string A() = 0;
+       virtual   void wallet() = 0,
+                      levels() = 0,
+                      send(string oI, mSide oS, string oP, string oQ, mOrderType oLM, mTimeInForce oTIF, bool oPO, unsigned long oT) = 0,
+                      cancel(string oI, string oE, mSide oS, unsigned long oT) = 0,
+                      cancelAll() = 0,
+                      close() = 0;
   };
+
+  class BitmexGw : public Gw {
+      public:
+        string (*randId)() = 0;
+        function<void(mOrder)>        evDataOrder;
+        function<void(mTrade)>        evDataTrade;
+        function<void(mWallet)>       evDataWallet;
+        function<void(mLevels)>       evDataLevels;
+        function<void(mConnectivity)> evConnectOrder,
+                                      evConnectMarket;
+        uWS::Hub                *hub      = nullptr;
+        uWS::Group<uWS::CLIENT> *gwGroup  = nullptr;
+        mExchange exchange = mExchange::Null;
+            int free    = 0;
+         double makeFee = 0,  minTick = 0,
+                takeFee = 0,  minSize = 0;
+         string base    = "", quote   = "",
+                name    = "", symbol  = "",
+                apikey  = "", secret  = "",
+                user    = "", pass    = "",
+                ws      = "", http    = "";
+        virtual string A() {return "";}
+        void wallet() {};
+        void levels() {};
+        void send(string oI, mSide oS, string oP, string oQ, mOrderType oLM, mTimeInForce oTIF, bool oPO, unsigned long oT) {};
+        void cancel(string oI, string oE, mSide oS, unsigned long oT) {}
+        void cancelAll() {}
+        void close() {};
+    };
+
+  Gw *Gw::E(mExchange e) { return new BitmexGw();}
+
+
   class Klass {
     protected:
       Gw             *gw = nullptr;
@@ -604,6 +653,7 @@ namespace K {
       void pgLink(Klass *k) { wallet = k; };
       void qeLink(Klass *k) { engine = k; };
   };
+
   class kLass: public Klass {
     private:
       mQuotingParams p;
